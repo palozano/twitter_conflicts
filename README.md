@@ -1,6 +1,6 @@
 # Hierarchical Twitter
 
-Trying to find hierarchies within social networks.
+Trying to find conflicts within social networks.
 
 ## Code
 
