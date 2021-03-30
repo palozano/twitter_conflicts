@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
-
 import spacy
 from spacy.language import Language
+from spacy.tokenizer import Tokenizer
+import re
 
 # Creating the model with English
 nlp = spacy.load('en_core_web_sm')
@@ -50,4 +50,24 @@ for sentence in custom_ellipsis_sentences:
 
 
 # Tokenization
+for token in introduction_doc:
+    print(token, token.idx)
 
+    # print(token, token.idx, token.text_with_ws, token.is_alpha, token.is_punct, token.is_space, token.shape_, token.is_stop)
+
+
+# You can customize the tokenization by updating the tokenizer property on the nlp object
+custom_nlp = spacy.load('en_core_web_sm')
+prefix_re = spacy.util.compile_prefix_regex(custom_nlp.Defaults.prefixes)
+suffix_re = spacy.util.compile_suffix_regex(custom_nlp.Defaults.suffixes)
+infix_re = re.compile(r'''[-~]''')
+def customize_tokenizer(nlp):
+    # Adds support to use `-` as the delimiter for tokenization
+    return Tokenizer(nlp.vocab, prefix_search=prefix_re.search,
+                     suffix_search=suffix_re.search,
+                     infix_finditer=infix_re.finditer,
+                     token_match=None
+                     )
+custom_nlp.tokenizer = customize_tokenizer(custom_nlp)
+custom_tokenizer_about_doc = custom_nlp(introduction_text)
+print([token.text for token in custom_tokenizer_about_doc])
